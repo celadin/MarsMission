@@ -1,6 +1,6 @@
 ﻿namespace MarsMission.Core.Commands
 {
-    public abstract class CommandBase
+    internal abstract class CommandBase
     {
         protected Rover Rover;
 

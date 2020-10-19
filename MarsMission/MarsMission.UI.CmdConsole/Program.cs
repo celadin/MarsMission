@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using MarsMission.Core;
 
 namespace MarsMission.UI.CmdConsole
@@ -15,10 +16,12 @@ namespace MarsMission.UI.CmdConsole
                     var spaceCenter = new SpaceCenter();
 
                     SetPlateau(spaceCenter);
-                    SetRover(spaceCenter);
-                    SetRemoteControl(spaceCenter);
+                    SetRovers(spaceCenter);
 
-                    Console.WriteLine(spaceCenter.Launch());
+                    foreach (var position in spaceCenter.Launch())
+                    {
+                        Console.WriteLine(position);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -49,30 +52,31 @@ namespace MarsMission.UI.CmdConsole
             spaceCenter.SetPlateau(weight, height);
         }
 
-        private static void SetRover(SpaceCenter spaceCenter)
+        private static void SetRovers(SpaceCenter spaceCenter)
         {
-            Console.WriteLine("\n================== ROVER =========================\n");
+            Console.WriteLine("\n================== ROVERS =========================\n");
 
-            Console.WriteLine("X Coordinate : ");
-            var xCoordinate = Convert.ToInt32(Console.ReadLine());
+            var answer = 'N';
 
-            Console.WriteLine("Y Coordinate : ");
-            var yCoordinate = Convert.ToInt32(Console.ReadLine());
+            do
+            {
+                Console.WriteLine("X Coordinate : ");
+                var xCoordinate = Convert.ToInt32(Console.ReadLine());
 
-            Console.WriteLine("Heading Route : (East : E, West : W, North : N, South : S)");
-            var head = Convert.ToChar(Console.ReadLine());
+                Console.WriteLine("Y Coordinate : ");
+                var yCoordinate = Convert.ToInt32(Console.ReadLine());
 
-            spaceCenter.SetRover(xCoordinate, yCoordinate, head);
-        }
+                Console.WriteLine("Heading Route : (East : E, West : W, North : N, South : S)");
+                var head = Convert.ToChar(Console.ReadLine());
 
-        private static void SetRemoteControl(SpaceCenter spaceCenter)
-        {
-            Console.WriteLine("\n================== COMMAND SET =========================\n");
+                Console.WriteLine("Command Set (Left : L, Right : R, Move : M) : ");
+                var commandSet = Console.ReadLine();
 
-            Console.WriteLine("Command Set (Left : L, Right : R, Move : M) : ");
-            var commandSet = Console.ReadLine();
+                spaceCenter.AddRover(xCoordinate, yCoordinate, head, commandSet);
 
-            spaceCenter.SetRemoteControl(commandSet);
+                Console.WriteLine("\nDo you want to add another rover ? (Yes : Y)/(No : N)");
+                answer = Convert.ToChar(Console.ReadLine().ToUpper());
+            } while (answer == 'Y');
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace MarsMission.Core.States
 {
-    public class SouthState : HeadingStateBase
+    internal class SouthState : HeadingStateBase
     {
         public SouthState(Rover rover) : base(rover)
         {

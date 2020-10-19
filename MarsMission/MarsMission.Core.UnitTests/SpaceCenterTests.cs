@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using NUnit.Framework;
 
 namespace MarsMission.Core.UnitTests
@@ -15,10 +16,9 @@ namespace MarsMission.Core.UnitTests
         {
             var spaceCenter = new SpaceCenter()
                 .SetPlateau(plateauWeight, plateauHeight)
-                .SetRover(roverX, roverY, roverHead)
-                .SetRemoteControl(commandSet);
+                .AddRover(roverX, roverY, roverHead, commandSet);
 
-            var actualPosition = spaceCenter.Launch();
+            var actualPosition = spaceCenter.Launch().First();
 
             Assert.That(actualPosition, Is.EqualTo(expectedPosition));
         }
@@ -32,41 +32,23 @@ namespace MarsMission.Core.UnitTests
         {
             var spaceCenter = new SpaceCenter()
                 .SetPlateau(plateauWeight, plateauHeight)
-                .SetRover(roverX, roverY, roverHead)
-                .SetRemoteControl(commandSet);
+                .AddRover(roverX, roverY, roverHead, commandSet);
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => spaceCenter.Launch());
+            Assert.Throws<ArgumentOutOfRangeException>(() => spaceCenter.Launch().First());
         }
 
         [Test]
         public void Launch_PlateauIsNull_ThrowArgumentNullException()
         {
             Assert.Throws<ArgumentNullException>(() => new SpaceCenter()
-                .SetRover(0, 0, 'E')
-                .SetRemoteControl("").Launch());
-        }
-
-        [Test]
-        public void Launch_RemoteControlIsNull_ThrowArgumentNullException()
-        {
-            Assert.Throws<ArgumentNullException>(() => new SpaceCenter()
-                .SetPlateau(5, 5)
-                .SetRover(0, 0, 'E').Launch());
-        }
-
-        [Test]
-        public void Launch_RoverIsNull_ThrowArgumentNullException()
-        {
-            Assert.Throws<ArgumentNullException>(() => new SpaceCenter()
-                .SetPlateau(5, 5)
-                .SetRemoteControl("").Launch());
+                .AddRover(0, 0, 'E', "LR").Launch());
         }
 
         [TestCase(" ")]
         [TestCase("ab")]
         public void SetRemoteControl_UndefinedCommands_ThrowArgumentException(string commandSet)
         {
-            Assert.Throws<ArgumentException>(() => new SpaceCenter().SetRemoteControl(commandSet));
+            Assert.Throws<ArgumentException>(() => new SpaceCenter().SetPlateau(1,1).AddRover(0,0,'E',commandSet));
         }
     }
 }

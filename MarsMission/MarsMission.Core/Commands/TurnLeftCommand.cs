@@ -1,6 +1,6 @@
 ﻿namespace MarsMission.Core.Commands
 {
-    public class TurnLeftCommand : CommandBase
+    internal class TurnLeftCommand : CommandBase
     {
         public TurnLeftCommand(Rover rover) : base(rover)
         {

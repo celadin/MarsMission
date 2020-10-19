@@ -1,14 +1,17 @@
 ﻿using System;
-using System.Linq;
-using MarsMission.Core.Commands;
+using System.Collections.Generic;
 
 namespace MarsMission.Core
 {
     public class SpaceCenter
     {
+        private readonly IList<Rover> _rovers;
         private Plateau _plateau;
-        private RemoteControl _remoteControl;
-        private Rover _rover;
+
+        public SpaceCenter()
+        {
+            _rovers = new List<Rover>();
+        }
 
         public SpaceCenter SetPlateau(int weight, int height)
         {
@@ -21,54 +24,24 @@ namespace MarsMission.Core
             return this;
         }
 
-        public SpaceCenter SetRover(int x, int y, char head)
+        public SpaceCenter AddRover(int x, int y, char head, string commandSet)
         {
-            _rover = new Rover(x, y, head, _plateau);
+            var rover = new Rover(x, y, head, commandSet, _plateau);
+            _rovers.Add(rover);
             return this;
         }
 
-        public SpaceCenter SetRemoteControl(string commandSet)
-        {
-            var commands = commandSet.ToUpper().ToArray();
-            if (!commands.Any())
-                throw new ArgumentNullException(nameof(commandSet));
 
-            _remoteControl = new RemoteControl();
-
-            foreach (var command in commands)
-                switch (command)
-                {
-                    case 'L':
-                        _remoteControl.AddCommand(new TurnLeftCommand(_rover));
-                        break;
-                    case 'R':
-                        _remoteControl.AddCommand(new TurnRightCommand(_rover));
-                        break;
-                    case 'M':
-                        _remoteControl.AddCommand(new MoveCommand(_rover));
-                        break;
-                    default:
-                        throw new ArgumentException("Undefined Command");
-                }
-
-
-            return this;
-        }
-
-        public string Launch()
+        public IEnumerable<string> Launch()
         {
             if (_plateau == null)
                 throw new ArgumentNullException(nameof(_plateau));
 
-            if (_rover == null)
-                throw new ArgumentNullException(nameof(_rover));
-
-            if (_remoteControl == null)
-                throw new ArgumentNullException(nameof(_remoteControl));
-
-            _remoteControl.ExecuteAll();
-
-            return _rover.ToString();
+            foreach (var rover in _rovers)
+            {
+                rover.ExecuteAllCommands();
+                yield return rover.ToString();
+            }
         }
     }
 }

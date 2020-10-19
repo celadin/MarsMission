@@ -3,7 +3,7 @@ using MarsMission.Core.Commands;
 
 namespace MarsMission.Core
 {
-    public class RemoteControl
+    internal class RemoteControl
     {
         private readonly List<CommandBase> _commandList;
 
