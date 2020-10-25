@@ -84,7 +84,7 @@ namespace MarsMission.Core
             CurrentState.Move();
         }
 
-        public void ExecuteAllCommands()
+        public void Drive()
         {
             _remoteControl.ExecuteAll();
         }

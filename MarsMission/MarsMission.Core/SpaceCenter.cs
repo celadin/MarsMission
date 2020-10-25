@@ -39,7 +39,7 @@ namespace MarsMission.Core
 
             foreach (var rover in _rovers)
             {
-                rover.ExecuteAllCommands();
+                rover.Drive();
                 yield return rover.ToString();
             }
         }
