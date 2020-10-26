@@ -34,6 +34,8 @@ namespace MarsMission.Core
 
         public IEnumerable<string> Launch()
         {
+            //TODO : Add Collision Warning System
+
             if (_plateau == null)
                 throw new ArgumentNullException(nameof(_plateau));
 

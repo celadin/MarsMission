@@ -16,7 +16,7 @@ namespace MarsMission.Core.UnitTests
         [TestCase('s')]
         public void DetermineCurrentState_ValidStates_CurrentStateSetsCorrectly(char head)
         {
-            var rover = new Rover(0, 0, head, "M", new Plateau {Weight = 1, Height = 1});
+            var rover = new Rover(0, 0, head, "M", GetPlateau(1,1));
 
             StringAssert.AreEqualIgnoringCase(head.ToString(), rover.CurrentState.ToString());
         }
@@ -25,13 +25,13 @@ namespace MarsMission.Core.UnitTests
         [TestCase('a')]
         public void DetermineCurrentState_InvalidStates_ThrowArgumentException(char head)
         {
-            Assert.Throws<ArgumentException>(() => new Rover(0, 0, head, "M", new Plateau {Weight = 1, Height = 1}));
+            Assert.Throws<ArgumentException>(() => new Rover(0, 0, head, "M", GetPlateau(1, 1)));
         }
 
         [Test]
         public void Move_WithinBordersOnXCoordinate_ChangedPositionByHeadingState()
         {
-            var rover = new Rover(0, 0, 'E', "M", new Plateau {Weight = 3, Height = 3});
+            var rover = new Rover(0, 0, 'E', "M", GetPlateau(3, 3));
 
             Assert.That(rover.XCoordinate, Is.EqualTo(0));
 
@@ -48,7 +48,7 @@ namespace MarsMission.Core.UnitTests
         [Test]
         public void Move_OutOfBordersOnXCoordinate_ThrowArgumentOutOfRangeException()
         {
-            var rover = new Rover(0, 0, 'E', "M", new Plateau {Weight = 3, Height = 3});
+            var rover = new Rover(0, 0, 'E', "M", GetPlateau(3, 3));
 
             rover.Move();
             rover.Move();
@@ -60,7 +60,7 @@ namespace MarsMission.Core.UnitTests
         [Test]
         public void Move_WithinBordersOnYCoordinate_ChangedPositionByHeadingState()
         {
-            var rover = new Rover(0, 0, 'N', "M", new Plateau {Weight = 3, Height = 3});
+            var rover = new Rover(0, 0, 'N', "M", GetPlateau(3, 3));
 
             Assert.That(rover.YCoordinate, Is.EqualTo(0));
 
@@ -77,7 +77,7 @@ namespace MarsMission.Core.UnitTests
         [Test]
         public void Move_OutOfBordersOnYCoordinate_ThrowArgumentOutOfRangeException()
         {
-            var rover = new Rover(0, 0, 'N', "M", new Plateau {Weight = 3, Height = 3});
+            var rover = new Rover(0, 0, 'N', "M", GetPlateau(3, 3));
 
             rover.Move();
             rover.Move();
@@ -89,7 +89,7 @@ namespace MarsMission.Core.UnitTests
         [Test]
         public void TurnLeft_WhenCalled_ChangedStateByHeadingState()
         {
-            var rover = new Rover(1, 1, 'E', "M", new Plateau {Weight = 3, Height = 3});
+            var rover = new Rover(1, 1, 'E', "M", GetPlateau(3, 3));
 
             rover.TurnLeft();
             Assert.That(rover.CurrentState.ToString(), Is.EqualTo("N"));
@@ -107,7 +107,7 @@ namespace MarsMission.Core.UnitTests
         [Test]
         public void TurnRight_WhenCalled_ChangedStateByHeadingState()
         {
-            var rover = new Rover(1, 1, 'E', "M", new Plateau {Weight = 3, Height = 3});
+            var rover = new Rover(1, 1, 'E', "M", GetPlateau(3, 3));
 
             rover.TurnRight();
             Assert.That(rover.CurrentState.ToString(), Is.EqualTo("S"));
@@ -125,7 +125,7 @@ namespace MarsMission.Core.UnitTests
         [Test]
         public void CombinationOfCommands_WhenCalled_ReturnExpectedPosition()
         {
-            var rover = new Rover(1, 1, 'E', "M", new Plateau {Weight = 3, Height = 3});
+            var rover = new Rover(1, 1, 'E', "M", GetPlateau(3, 3));
 
             rover.TurnLeft();
             Assert.That(rover.ToString(), Is.EqualTo("1 1 N"));
@@ -138,6 +138,16 @@ namespace MarsMission.Core.UnitTests
 
             rover.Move();
             Assert.That(rover.ToString(), Is.EqualTo("2 2 E"));
+        }
+
+
+        private Plateau GetPlateau(int weight, int height)
+        {
+            return new Plateau()
+            {
+                Weight = weight,
+                Height = height
+            };
         }
     }
 }
