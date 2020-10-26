@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Linq;
-using MarsMission.Core.Commands;
 using MarsMission.Core.States;
 
 namespace MarsMission.Core
 {
     public class Rover
     {
+        private readonly MovementEngine _movementEngine;
+        private readonly Plateau _plateau;
         private int _xCoordinate;
         private int _yCoordinate;
-        private readonly Plateau _plateau;
-        private RemoteControl _remoteControl;
 
         public Rover(int xCoordinate, int yCoordinate, char head, string commandSet, Plateau plateau)
         {
@@ -25,7 +23,7 @@ namespace MarsMission.Core
             SouthState = new SouthState(this);
 
             DetermineCurrentState(head);
-            SetRemoteControl(commandSet);
+            _movementEngine = new MovementEngine(this, commandSet);
         }
 
         public int XCoordinate
@@ -86,7 +84,7 @@ namespace MarsMission.Core
 
         public void Drive()
         {
-            _remoteControl.ExecuteAll();
+            _movementEngine.Fire();
         }
 
         private void DetermineCurrentState(char head)
@@ -101,33 +99,6 @@ namespace MarsMission.Core
                 'S' => SouthState,
                 _ => throw new ArgumentException("Uncertain Head")
             };
-        }
-
-        private void SetRemoteControl(string commandSet)
-        {
-            var commands = commandSet.ToUpper().ToArray();
-            if (!commands.Any())
-                throw new ArgumentNullException(nameof(commandSet));
-
-            var remoteControl = new RemoteControl();
-
-            foreach (var command in commands)
-                switch (command)
-                {
-                    case 'L':
-                        remoteControl.AddCommand(new TurnLeftCommand(this));
-                        break;
-                    case 'R':
-                        remoteControl.AddCommand(new TurnRightCommand(this));
-                        break;
-                    case 'M':
-                        remoteControl.AddCommand(new MoveCommand(this));
-                        break;
-                    default:
-                        throw new ArgumentException("Undefined Command");
-                }
-
-            this._remoteControl = remoteControl;
         }
 
         public override string ToString()
